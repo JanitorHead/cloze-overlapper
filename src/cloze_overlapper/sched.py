@@ -36,17 +36,33 @@ Modifications to Anki's scheduling
 from __future__ import (absolute_import, division,
                         print_function, unicode_literals)
 
-from .libaddon.platform import ANKI20
+from .libaddon.platform import ANKI20, ANKI_DATE_VERSIONING
 
-from anki.sched import Scheduler as SchedulerV1
+from anki.utils import ids2str, int_time
 
-if ANKI20:
-    SCHEDULERS = (SchedulerV1, )
+if ANKI_DATE_VERSIONING:
+    from anki.scheduler.v3 import Scheduler as SchedulerV3
+
+    SCHEDULERS = (SchedulerV3, )
+    def initializeScheduler():
+        for scheduler in SCHEDULERS:
+            scheduler.bury_cards = wrap(
+                scheduler.bury_cards, myBurySiblings, "around")
 else:
-    from anki.schedv2 import Scheduler as SchedulerV2
-    SCHEDULERS = (SchedulerV1, SchedulerV2)
+    from anki.sched import Scheduler as SchedulerV1
 
-from anki.utils import ids2str, intTime
+    if ANKI20:
+        SCHEDULERS = (SchedulerV1, )
+    else:
+        from anki.schedv2 import Scheduler as SchedulerV2
+        SCHEDULERS = (SchedulerV1, SchedulerV2)
+
+    def initializeScheduler():
+        for scheduler in SCHEDULERS:
+            scheduler._burySiblings = wrap(
+                scheduler._burySiblings, myBurySiblings, "around")
+
+
 from anki.hooks import wrap
 
 from aqt import mw
@@ -100,18 +116,13 @@ and (queue=0 or (queue=2 and due<=?))""", card.nid, card.id, self.today):
     # then bury
     if toBury:
         # <MODIFICATION>
-        if mw.col.schedVer() == 1:
+        if mw.col.sched_ver() == 1:
             self.col.db.execute(
                 "update cards set queue=-2,mod=?,usn=? where id in " +
                 ids2str(toBury),
-                intTime(), self.col.usn())
+                int_time(), self.col.usn())
             self.col.log(toBury)
-        elif mw.col.schedVer() == 2:
+        elif mw.col.sched_ver() == 2:
             self.buryCards(toBury, manual=False)
         # </MODIFICATION>
 
-
-def initializeScheduler():
-    for scheduler in SCHEDULERS:
-        scheduler._burySiblings = wrap(
-            scheduler._burySiblings, myBurySiblings, "around")

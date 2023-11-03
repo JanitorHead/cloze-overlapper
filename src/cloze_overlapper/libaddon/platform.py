@@ -39,6 +39,7 @@ from __future__ import (absolute_import, division,
 import sys
 import os
 
+import re
 from aqt import mw
 from anki import version as anki_version
 from anki.utils import isMac, isWin
@@ -48,7 +49,11 @@ __all__ = ["PYTHON3", "ANKI20", "SYS_ENCODING", "MODULE_ADDON",
            "PATH_ADDON", "PATH_USERFILES", "PLATFORM"]
 
 PYTHON3 = sys.version_info[0] == 3
+
 ANKI20 = anki_version.startswith("2.0.")
+new_versioning_scheme = re.compile(r"\d\d\.\d\d")
+ANKI_DATE_VERSIONING = re.fullmatch(new_versioning_scheme, anki_version) is not None
+
 SYS_ENCODING = sys.getfilesystemencoding()
 
 name_components = __name__.split(".")
