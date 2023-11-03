@@ -123,6 +123,6 @@ and (queue=0 or (queue=2 and due<=?))""", card.nid, card.id, self.today):
                 int_time(), self.col.usn())
             self.col.log(toBury)
         elif mw.col.sched_ver() == 2:
-            self.buryCards(toBury, manual=False)
+            self.bury_cards(toBury, manual=False)
         # </MODIFICATION>
 
