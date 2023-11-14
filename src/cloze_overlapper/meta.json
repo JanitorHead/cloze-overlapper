@@ -1,1 +1,1 @@
-{"name": "Cloze Overlapper for Anki 21", "conflicts": ["969733775"], "homepage": "https://github.com/glutanimate/cloze-overlapper", "mod": 1610421170, "min_point_version": 28, "max_point_version": 38, "branch_index": 0, "disabled": false}
+{"disabled": false, "mod": 1610421170, "conflicts": ["969733775"], "max_point_version": 38, "min_point_version": 28, "branch_index": 0, "update_enabled": true, "homepage": "https://github.com/glutanimate/cloze-overlapper", "name": "Cloze Overlapper for Anki 21"}
