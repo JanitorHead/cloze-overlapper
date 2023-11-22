@@ -41,6 +41,8 @@ from anki.errors import AnkiError
 from aqt.qt import *
 from aqt import mw
 
+from PyQt6 import QtWidgets
+
 from ..libaddon.gui.about import get_about_string
 
 from ..config import config
@@ -69,7 +71,7 @@ class OlcOptionsGlobal(QDialog):
         self.f.buttonBox.accepted.connect(self.onAccept)
         self.f.buttonBox.rejected.connect(self.onReject)
         self.f.buttonBox.button(
-            QDialogButtonBox.RestoreDefaults).clicked.connect(self.onRestore)
+            QDialogButtonBox.StandardButton.RestoreDefaults).clicked.connect(self.onRestore)
         about_string = get_about_string()
         self.f.htmlAbout.setHtml(about_string)
 
@@ -141,7 +143,7 @@ class OlcOptionsGlobal(QDialog):
 def invokeOptionsGlobal():
     """Invoke global config dialog"""
     dialog = OlcOptionsGlobal(mw)
-    return dialog.exec_()
+    return dialog.exec()
 
 
 def initializeOptions():
